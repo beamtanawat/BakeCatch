@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>BakeCatch Firebase Test</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    #status {
+      padding: 12px;
+      background: #eeeeee;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 12px 18px;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    #output {
+      margin-top: 20px;
+      padding: 16px;
+      background: #111111;
+      color: white;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>BakeCatch Firebase Test</h1>
+
+  <p id="status">
+    Connecting to Firebase...
+  </p>
+
+  <button id="saveBtn" disabled>
+    Save Test Session
+  </button>
+
+  <button id="loadBtn" disabled>
+    Load Sessions
+  </button>
+
+  <pre id="output">Waiting...</pre>
+
+
+  <script type="module">
+
+    // =====================================================
+    // Firebase
+    // =====================================================
+
+    import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+    import {
+      getAuth,
+      signInAnonymously,
+      onAuthStateChanged
+    }
+    from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      getDocs,
+      doc,
+      updateDoc,
+      increment,
+      serverTimestamp,
+      query,
+      orderBy
+    }
+    from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+    // =====================================================
+    // Firebase Config
+    // เปลี่ยนตรงนี้เป็นค่าจริงของ BakeCatch-Web
+    // =====================================================
+
+    const firebaseConfig = {
+
+      apiKey: "AIzaSyDKQcYGiUdCky3BDFbFSj7aghNKSvTXPGk",
+
+      authDomain: "bakecatch.firebaseapp.com",
+
+      projectId: "bakecatch",
+
+      storageBucket: "bakecatch.firebasestorage.app",
+
+      messagingSenderId: "589076082245",
+
+      appId: "1:589076082245:web:610c537c63774d11b9bd2c"
+
+    };
+
+
+    // =====================================================
+    // Initialize
+    // =====================================================
+
+    const app = initializeApp(firebaseConfig);
+
+    const auth = getAuth(app);
+
+    const db = getFirestore(app);
+
+
+    // =====================================================
+    // HTML
+    // =====================================================
+
+    const statusText =
+      document.getElementById("status");
+
+    const output =
+      document.getElementById("output");
+
+    const saveBtn =
+      document.getElementById("saveBtn");
+
+    const loadBtn =
+      document.getElementById("loadBtn");
+
+
+    // =====================================================
+    // Anonymous Login
+    // =====================================================
+
+    async function login() {
+
+      try {
+
+        statusText.textContent =
+          "Logging in anonymously...";
+
+        await signInAnonymously(auth);
+
+      }
+
+      catch (error) {
+
+        console.error(error);
+
+        statusText.textContent =
+          "Login Error ❌ : " + error.message;
+
+      }
+
+    }
+
+
+    onAuthStateChanged(auth, (user) => {
+
+      if (user) {
+
+        console.log("Firebase UID:", user.uid);
+
+        statusText.textContent =
+          "Anonymous login success ✅";
+
+        saveBtn.disabled = false;
+
+        loadBtn.disabled = false;
+
+      }
+
+    });
+
+
+    // =====================================================
+    // SAVE SESSION
+    // =====================================================
+
+    saveBtn.addEventListener("click", async () => {
+
+      try {
+
+        output.textContent =
+          "Saving session...";
+
+
+        const playerId = "P001";
+
+
+        // Test data
+        const sessionData = {
+
+          score: 900,
+
+          durationSec: 180,
+
+          level: "Medium",
+
+          catchCount: 45,
+
+          missCount: 5,
+
+          accuracy: 90,
+
+          maxCombo: 14,
+
+          recipeComplete: 5,
+
+          leftAvgGrip: 70,
+
+          rightAvgGrip: 60,
+
+          playedAt: serverTimestamp()
+
+        };
+
+
+        // players/P001/sessions
+
+        const sessionsRef =
+          collection(
+            db,
+            "players",
+            playerId,
+            "sessions"
+          );
+
+
+        // Auto-ID
+        const newSession =
+          await addDoc(
+            sessionsRef,
+            sessionData
+          );
+
+
+        // Update player
+
+        const playerRef =
+          doc(
+            db,
+            "players",
+            playerId
+          );
+
+
+        await updateDoc(playerRef, {
+
+          playCount: increment(1),
+
+          lastPlayedAt: serverTimestamp()
+
+        });
+
+
+        output.textContent =
+          "Save Success ✅\n\n" +
+          "Player: " + playerId +
+          "\n\nSession ID:\n" +
+          newSession.id;
+
+      }
+
+      catch (error) {
+
+        console.error(error);
+
+        output.textContent =
+          "Save Error ❌\n\n" +
+          error.message;
+
+      }
+
+    });
+
+
+    // =====================================================
+    // LOAD SESSIONS
+    // =====================================================
+
+    loadBtn.addEventListener("click", async () => {
+
+      try {
+
+        output.textContent =
+          "Loading sessions...";
+
+
+        const sessionsRef =
+          collection(
+            db,
+            "players",
+            "P001",
+            "sessions"
+          );
+
+
+        const sessionsQuery =
+          query(
+            sessionsRef,
+            orderBy("playedAt", "asc")
+          );
+
+
+        const snapshot =
+          await getDocs(sessionsQuery);
+
+
+        const sessions = [];
+
+
+        snapshot.forEach((docSnapshot) => {
+
+          const data =
+            docSnapshot.data();
+
+
+          sessions.push({
+
+            id: docSnapshot.id,
+
+            score:
+              data.score ?? 0,
+
+            durationSec:
+              data.durationSec ?? 0,
+
+            level:
+              data.level ?? "-",
+
+            catchCount:
+              data.catchCount ?? 0,
+
+            missCount:
+              data.missCount ?? 0,
+
+            accuracy:
+              data.accuracy ?? 0,
+
+            maxCombo:
+              data.maxCombo ?? 0,
+
+            recipeComplete:
+              data.recipeComplete ?? 0,
+
+            leftAvgGrip:
+              data.leftAvgGrip ?? 0,
+
+            rightAvgGrip:
+              data.rightAvgGrip ?? 0
+
+          });
+
+        });
+
+
+        output.textContent =
+          JSON.stringify(
+            sessions,
+            null,
+            2
+          );
+
+      }
+
+      catch (error) {
+
+        console.error(error);
+
+        output.textContent =
+          "Load Error ❌\n\n" +
+          error.message;
+
+      }
+
+    });
+
+
+    // =====================================================
+    // Start
+    // =====================================================
+
+    login();
+
+  </script>
+
+</body>
+</html>

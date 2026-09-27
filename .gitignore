@@ -1,0 +1,79 @@
+# macOS
+.DS_Store
+._*
+.AppleDouble
+.LSOverride
+.Spotlight-V100/
+.Trashes/
+
+# Editors and IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Unity generated files
+unity-game/[Ll]ibrary/
+unity-game/[Tt]emp/
+unity-game/[Oo]bj/
+unity-game/[Ll]ogs/
+unity-game/[Uu]ser[Ss]ettings/
+unity-game/[Bb]uild/
+unity-game/[Bb]uilds/
+unity-game/[Mm]emoryCaptures/
+unity-game/[Rr]ecordings/
+unity-game/[Aa]ssets/AssetStoreTools*
+unity-game/*.csproj
+unity-game/*.sln
+unity-game/*.user
+unity-game/*.pidb
+unity-game/*.booproj
+unity-game/*.svd
+unity-game/*.pdb
+unity-game/*.mdb
+unity-game/*.opendb
+unity-game/*.VC.db
+
+# Build outputs
+build/
+Build/
+dist/
+out/
+release/
+*.apk
+*.aab
+*.ipa
+*.unitypackage
+*.bin
+*.elf
+*.hex
+
+# Logs and local tool state
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+firebase-debug.log*
+firestore-debug.log*
+.firebase/
+
+# Environment files and credentials
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+**/secrets/
+**/credentials/
+**/*service-account*.json
+**/*serviceAccount*.json
+**/*firebase-adminsdk*.json
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# Local HTML backups: keep them on disk, but rely on Git history for versions.
+web-dashboard/*-backup.html

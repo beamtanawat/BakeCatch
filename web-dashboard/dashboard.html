@@ -1,0 +1,2942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Bake Catch 🍰</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+
+    /* =========================================================
+       GLOBAL
+       ========================================================= */
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+
+      font-family:
+        "Trebuchet MS",
+        "Arial Rounded MT Bold",
+        Arial,
+        sans-serif;
+
+      color: #4b342c;
+
+      background:
+        radial-gradient(
+          circle at 10% 10%,
+          rgba(255,255,255,0.95),
+          transparent 22%
+        ),
+        linear-gradient(
+          180deg,
+          #fff7ed 0%,
+          #fff1e8 45%,
+          #ffeaf0 100%
+        );
+    }
+
+
+    /* =========================================================
+       FLOATING DECORATIONS
+       ========================================================= */
+
+    .floating-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    .float-item {
+      position: absolute;
+      opacity: 0.18;
+      animation: float 6s ease-in-out infinite;
+      user-select: none;
+    }
+
+    .f1 {
+      top: 8%;
+      left: 3%;
+      font-size: 46px;
+    }
+
+    .f2 {
+      top: 28%;
+      right: 4%;
+      font-size: 52px;
+      animation-delay: 1s;
+    }
+
+    .f3 {
+      top: 62%;
+      left: 4%;
+      font-size: 42px;
+      animation-delay: 2s;
+    }
+
+    .f4 {
+      top: 82%;
+      right: 5%;
+      font-size: 48px;
+      animation-delay: 1.5s;
+    }
+
+    .f5 {
+      top: 45%;
+      left: 47%;
+      font-size: 32px;
+      animation-delay: 3s;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0) rotate(0deg);
+      }
+
+      50% {
+        transform: translateY(-14px) rotate(5deg);
+      }
+
+    }
+
+
+    /* =========================================================
+       MAIN CONTAINER
+       ========================================================= */
+
+    .container {
+      max-width: 1280px;
+      margin: auto;
+      padding: 28px 22px 70px;
+    }
+
+
+    /* =========================================================
+       GAME HEADER
+       ========================================================= */
+
+    .game-header {
+
+      position: relative;
+      overflow: hidden;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 20px;
+
+      padding: 25px 28px;
+
+      border-radius: 28px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #ff9da9,
+          #ffbb84
+        );
+
+      box-shadow:
+        0 12px 0 rgba(191,111,89,0.10),
+        0 16px 35px rgba(159,98,77,0.15);
+
+      margin-bottom: 22px;
+    }
+
+    .game-header::after {
+
+      content: "";
+
+      position: absolute;
+
+      width: 250px;
+      height: 250px;
+
+      border-radius: 50%;
+
+      background: rgba(255,255,255,0.15);
+
+      right: -70px;
+      top: -110px;
+    }
+
+    .game-brand {
+
+      display: flex;
+      align-items: center;
+      gap: 18px;
+
+      z-index: 1;
+    }
+
+    .logo-box {
+
+      width: 82px;
+      height: 82px;
+
+      flex-shrink: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 24px;
+
+      font-size: 45px;
+
+      background:
+        linear-gradient(
+          180deg,
+          #fffaf2,
+          #fff0dd
+        );
+
+      border: 4px solid rgba(255,255,255,0.8);
+
+      box-shadow:
+        0 7px 0 rgba(130,73,55,0.12);
+    }
+
+    .game-title {
+
+      margin: 0;
+
+      color: white;
+
+      font-size: 39px;
+      font-weight: 900;
+
+      letter-spacing: 0.3px;
+
+      text-shadow:
+        0 3px 0 rgba(115,67,56,0.18);
+    }
+
+    .game-subtitle {
+
+      margin: 5px 0 0;
+
+      color: rgba(255,255,255,0.94);
+
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+
+    /* PLAYER HUD */
+
+    .player-hud {
+
+      z-index: 1;
+
+      display: flex;
+      align-items: center;
+
+      gap: 13px;
+
+      min-width: 230px;
+
+      padding: 13px 17px;
+
+      background: rgba(255,255,255,0.93);
+
+      border: 3px solid rgba(255,255,255,0.7);
+
+      border-radius: 21px;
+
+      box-shadow:
+        0 6px 0 rgba(123,77,63,0.10);
+    }
+
+    .avatar {
+
+      width: 54px;
+      height: 54px;
+
+      border-radius: 18px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 31px;
+
+      background: #fff2d8;
+    }
+
+    .player-small {
+
+      font-size: 12px;
+      color: #9b7768;
+
+      font-weight: 800;
+      text-transform: uppercase;
+
+      letter-spacing: 0.7px;
+    }
+
+    .player-name {
+
+      margin-top: 2px;
+
+      font-size: 21px;
+      font-weight: 900;
+
+      color: #4d332c;
+    }
+
+
+    /* =========================================================
+       WELCOME / QUEST BAR
+       ========================================================= */
+
+    .quest-bar {
+
+      display: flex;
+      align-items: center;
+      gap: 13px;
+
+      background: #fffdf9;
+
+      border: 2px solid #f5dcd0;
+
+      border-radius: 20px;
+
+      padding: 14px 18px;
+
+      margin-bottom: 22px;
+
+      box-shadow:
+        0 6px 18px rgba(133,88,67,0.07);
+    }
+
+    .quest-icon {
+      font-size: 25px;
+    }
+
+    .quest-text strong {
+      display: block;
+      color: #63463b;
+      font-size: 15px;
+    }
+
+    .quest-text span {
+      display: block;
+      margin-top: 2px;
+      color: #a17d6d;
+      font-size: 13px;
+    }
+
+    #status {
+      margin-left: auto;
+
+      padding: 8px 12px;
+
+      border-radius: 999px;
+
+      background: #fff3cf;
+
+      color: #84642d;
+
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    #status.success {
+
+      background: #e6f7df;
+      color: #4f7d3c;
+    }
+
+    #status.error {
+
+      background: #ffe0e3;
+      color: #a6444e;
+    }
+
+
+    /* =========================================================
+       SECTION TITLE
+       ========================================================= */
+
+    .mini-section-title {
+
+      margin: 7px 3px 13px;
+
+      font-size: 19px;
+      font-weight: 900;
+
+      color: #64483e;
+
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+
+    /* =========================================================
+       GAME STATS CARDS
+       ========================================================= */
+
+    .stats-grid {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      gap: 17px;
+
+      margin-bottom: 25px;
+    }
+
+    .game-card {
+
+      position: relative;
+
+      overflow: hidden;
+
+      min-height: 150px;
+
+      border-radius: 24px;
+
+      padding: 20px;
+
+      border: 2px solid rgba(224,183,165,0.46);
+
+      background:
+        rgba(255,255,255,0.92);
+
+      box-shadow:
+        0 8px 0 rgba(161,100,74,0.06),
+        0 13px 24px rgba(118,77,60,0.06);
+
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    .game-card:hover {
+
+      transform: translateY(-4px);
+
+      box-shadow:
+        0 11px 0 rgba(161,100,74,0.05),
+        0 16px 28px rgba(118,77,60,0.10);
+    }
+
+    .game-card::after {
+
+      content: "";
+
+      position: absolute;
+
+      width: 90px;
+      height: 90px;
+
+      border-radius: 50%;
+
+      right: -25px;
+      top: -28px;
+
+      background:
+        rgba(255,198,180,0.16);
+    }
+
+    .card-icon {
+
+      width: 46px;
+      height: 46px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 15px;
+
+      font-size: 25px;
+
+      margin-bottom: 13px;
+    }
+
+    .card-icon.play {
+      background: #ebe7ff;
+    }
+
+    .card-icon.score {
+      background: #fff1b9;
+    }
+
+    .card-icon.accuracy {
+      background: #dff6ef;
+    }
+
+    .card-icon.combo {
+      background: #ffe0e3;
+    }
+
+    .stat-label {
+
+      color: #9a786b;
+
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .stat-value {
+
+      margin-top: 5px;
+
+      font-size: 33px;
+      font-weight: 900;
+
+      color: #4b342c;
+    }
+
+    .stat-caption {
+
+      margin-top: 5px;
+
+      font-size: 12px;
+      color: #b08d7d;
+    }
+
+
+    /* =========================================================
+       SECTION PANEL
+       ========================================================= */
+
+    .panel {
+
+      padding: 25px;
+
+      margin-bottom: 24px;
+
+      border-radius: 27px;
+
+      background:
+        rgba(255,255,255,0.93);
+
+      border:
+        2px solid #f0d8cc;
+
+      box-shadow:
+        0 9px 0 rgba(161,100,74,0.05),
+        0 15px 30px rgba(108,72,56,0.06);
+    }
+
+    .panel-head {
+
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+
+      gap: 15px;
+
+      margin-bottom: 19px;
+    }
+
+    .panel-title {
+
+      margin: 0;
+
+      font-size: 25px;
+      font-weight: 900;
+
+      color: #49332c;
+    }
+
+    .panel-desc {
+
+      margin: 5px 0 0;
+
+      color: #9b7c6e;
+
+      font-size: 13px;
+    }
+
+    .cute-chip {
+
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+
+      padding: 7px 12px;
+
+      border-radius: 999px;
+
+      background: #fff0df;
+
+      color: #9a6747;
+
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+
+    /* =========================================================
+       SESSION INFO
+       ========================================================= */
+
+    .session-grid {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(6, 1fr);
+
+      gap: 13px;
+    }
+
+    .session-box {
+
+      padding: 15px;
+
+      border-radius: 18px;
+
+      background:
+        linear-gradient(
+          180deg,
+          #fff9f5,
+          #fff4ed
+        );
+
+      border:
+        2px solid #f4dfd3;
+    }
+
+    .session-icon {
+      font-size: 20px;
+      margin-bottom: 7px;
+    }
+
+    .session-label {
+
+      color: #9d7a6c;
+
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .session-value {
+
+      margin-top: 4px;
+
+      font-size: 23px;
+      font-weight: 900;
+    }
+
+
+    /* LEVEL BADGE */
+
+    .level-value {
+
+      display: inline-block;
+
+      padding: 6px 12px;
+
+      border-radius: 999px;
+
+      font-size: 17px;
+    }
+
+    .level-easy {
+
+      color: #407855;
+      background: #dbf4df;
+    }
+
+    .level-medium {
+
+      color: #916120;
+      background: #fff0bd;
+    }
+
+    .level-hard {
+
+      color: #a34e57;
+      background: #ffdfe2;
+    }
+
+
+    /* =========================================================
+       HAND CARDS
+       ========================================================= */
+
+    .hand-grid {
+
+      display: grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap: 19px;
+    }
+
+    .hand-card {
+
+      position: relative;
+
+      overflow: hidden;
+
+      padding: 22px;
+
+      border-radius: 22px;
+
+      border: 2px solid #f0ded5;
+
+      background:
+        linear-gradient(
+          180deg,
+          #fffaf7,
+          #fff6f2
+        );
+    }
+
+    .left-hand-card::after {
+
+      content: "🫐";
+
+      position: absolute;
+
+      right: 18px;
+      bottom: -7px;
+
+      font-size: 58px;
+      opacity: 0.09;
+    }
+
+    .right-hand-card::after {
+
+      content: "🍓";
+
+      position: absolute;
+
+      right: 17px;
+      bottom: -7px;
+
+      font-size: 58px;
+      opacity: 0.10;
+    }
+
+    .hand-top {
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      gap: 10px;
+    }
+
+    .hand-name {
+
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .hand-percent {
+
+      font-size: 30px;
+      font-weight: 900;
+    }
+
+    .grip-track {
+
+      position: relative;
+
+      height: 18px;
+
+      overflow: hidden;
+
+      margin-top: 17px;
+
+      border-radius: 999px;
+
+      background: #eee3de;
+
+      border: 2px solid rgba(255,255,255,0.8);
+    }
+
+    .grip-fill {
+
+      height: 100%;
+
+      width: 0;
+
+      border-radius: 999px;
+
+      transition:
+        width 0.8s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .left-fill {
+
+      background:
+        linear-gradient(
+          90deg,
+          #81c7ff,
+          #6a9df5
+        );
+    }
+
+    .right-fill {
+
+      background:
+        linear-gradient(
+          90deg,
+          #ff9ba8,
+          #ff6f8a
+        );
+    }
+
+    .hand-hint {
+
+      margin-top: 10px;
+
+      font-size: 12px;
+      color: #a08375;
+    }
+
+
+    /* =========================================================
+       CHARTS
+       ========================================================= */
+
+    .charts-grid {
+
+      display: grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap: 18px;
+    }
+
+    .chart-window {
+
+      height: 330px;
+
+      padding: 17px;
+
+      border-radius: 22px;
+
+      border: 2px solid #f1ded3;
+
+      background:
+        linear-gradient(
+          180deg,
+          #fffdfb,
+          #fff8f3
+        );
+    }
+
+    .chart-window.full {
+
+      grid-column: 1 / -1;
+
+      height: 350px;
+    }
+
+    .chart-title {
+
+      display: flex;
+      align-items: center;
+      gap: 7px;
+
+      font-size: 14px;
+      font-weight: 900;
+
+      color: #765549;
+
+      margin-bottom: 7px;
+    }
+
+    .chart-area {
+
+      height: calc(100% - 25px);
+    }
+
+
+    /* =========================================================
+       SESSION HISTORY
+       ========================================================= */
+
+    .table-wrap {
+
+      overflow-x: auto;
+
+      border-radius: 20px;
+
+      border: 2px solid #f0ded5;
+    }
+
+    table {
+
+      width: 100%;
+
+      min-width: 900px;
+
+      border-collapse: collapse;
+
+      background: white;
+    }
+
+    thead {
+
+      background:
+        linear-gradient(
+          90deg,
+          #fff0e6,
+          #ffedf0
+        );
+    }
+
+    th {
+
+      padding: 15px;
+
+      text-align: left;
+
+      color: #7d5c4e;
+
+      font-size: 12px;
+      text-transform: uppercase;
+
+      letter-spacing: 0.5px;
+    }
+
+    td {
+
+      padding: 14px 15px;
+
+      border-bottom: 1px dashed #ecdcd5;
+
+      font-size: 14px;
+    }
+
+    tbody tr {
+
+      transition: background 0.2s ease;
+    }
+
+    tbody tr:hover {
+
+      background: #fff9f6;
+    }
+
+    tbody tr:last-child td {
+
+      border-bottom: none;
+    }
+
+    .session-number {
+
+      display: inline-flex;
+
+      width: 30px;
+      height: 30px;
+
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 10px;
+
+      background: #fff0df;
+
+      color: #965f46;
+
+      font-weight: 900;
+    }
+
+    .table-level {
+
+      display: inline-flex;
+
+      padding: 5px 10px;
+
+      border-radius: 999px;
+
+      background: #fff1cf;
+
+      color: #88642c;
+
+      font-weight: 800;
+
+      font-size: 12px;
+    }
+
+
+    /* =========================================================
+       FOOTER
+       ========================================================= */
+
+    .footer {
+
+      margin-top: 28px;
+
+      text-align: center;
+
+      color: #a98a7d;
+
+      font-size: 12px;
+    }
+
+    .footer-logo {
+
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+       ========================================================= */
+
+    @media (max-width: 1000px) {
+
+      .stats-grid {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+
+      .session-grid {
+        grid-template-columns:
+          repeat(3, 1fr);
+      }
+
+    }
+
+    @media (max-width: 800px) {
+
+      .game-header {
+
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .player-hud {
+        width: 100%;
+      }
+
+      .hand-grid,
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .chart-window.full {
+        grid-column: auto;
+      }
+
+    }
+
+    @media (max-width: 600px) {
+
+      .container {
+        padding: 16px 12px 50px;
+      }
+
+      .game-title {
+        font-size: 30px;
+      }
+
+      .logo-box {
+        width: 65px;
+        height: 65px;
+        font-size: 35px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .session-grid {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+
+      .quest-bar {
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+
+      #status {
+        margin-left: 0;
+      }
+
+    }
+
+  </style>
+</head>
+
+
+<body>
+
+
+<!-- ============================================================
+     FLOATING GAME DECORATION
+     ============================================================ -->
+
+<div class="floating-bg">
+
+  <div class="float-item f1">🍓</div>
+  <div class="float-item f2">⭐</div>
+  <div class="float-item f3">🧁</div>
+  <div class="float-item f4">🍪</div>
+  <div class="float-item f5">✨</div>
+
+</div>
+
+
+
+<div class="container">
+
+
+  <!-- ==========================================================
+       GAME HEADER
+       ========================================================== -->
+
+  <header class="game-header">
+
+    <div class="game-brand">
+
+      <div class="logo-box">
+        🍰
+      </div>
+
+      <div>
+
+        <h1 class="game-title">
+          Bake Catch
+        </h1>
+
+        <p class="game-subtitle">
+          Rehabilitation Training Adventure
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="player-hud">
+
+      <div class="avatar">
+        🧑‍🍳
+      </div>
+
+      <div>
+
+        <div class="player-small">
+          Current Player
+        </div>
+
+        <div
+          class="player-name"
+          id="playerNameTop"
+        >
+          -
+        </div>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+
+  <!-- ==========================================================
+       QUEST BAR
+       ========================================================== -->
+
+  <div class="quest-bar">
+
+    <div class="quest-icon">
+      ⭐
+    </div>
+
+    <div class="quest-text">
+
+      <strong>
+        Training Adventure
+      </strong>
+
+      <span>
+        Catch ingredients and keep improving your skills!
+      </span>
+
+    </div>
+
+    <div id="status">
+      Connecting...
+    </div>
+
+  </div>
+
+
+
+  <!-- ==========================================================
+       GAME STATUS
+       ========================================================== -->
+
+  <div class="mini-section-title">
+    🎮 Player Status
+  </div>
+
+
+  <div class="stats-grid">
+
+
+    <div class="game-card">
+
+      <div class="card-icon play">
+        🎮
+      </div>
+
+      <div class="stat-label">
+        Plays
+      </div>
+
+      <div
+        class="stat-value"
+        id="playCount"
+      >
+        0
+      </div>
+
+      <div class="stat-caption">
+        Training sessions completed
+      </div>
+
+    </div>
+
+
+
+    <div class="game-card">
+
+      <div class="card-icon score">
+        🏆
+      </div>
+
+      <div class="stat-label">
+        Latest Score
+      </div>
+
+      <div
+        class="stat-value"
+        id="latestScore"
+      >
+        0
+      </div>
+
+      <div class="stat-caption">
+        Keep going for a new high score!
+      </div>
+
+    </div>
+
+
+
+    <div class="game-card">
+
+      <div class="card-icon accuracy">
+        🎯
+      </div>
+
+      <div class="stat-label">
+        Accuracy
+      </div>
+
+      <div
+        class="stat-value"
+        id="latestAccuracy"
+      >
+        0%
+      </div>
+
+      <div class="stat-caption">
+        Catch success rate
+      </div>
+
+    </div>
+
+
+
+    <div class="game-card">
+
+      <div class="card-icon combo">
+        🔥
+      </div>
+
+      <div class="stat-label">
+        Best Combo
+      </div>
+
+      <div
+        class="stat-value"
+        id="latestComboTop"
+      >
+        0
+      </div>
+
+      <div class="stat-caption">
+        Consecutive successful catches
+      </div>
+
+    </div>
+
+
+  </div>
+
+
+
+  <!-- ==========================================================
+       LATEST SESSION
+       ========================================================== -->
+
+  <section class="panel">
+
+
+    <div class="panel-head">
+
+      <div>
+
+        <h2 class="panel-title">
+          🍓 Latest Adventure
+        </h2>
+
+        <p class="panel-desc">
+          Your most recent Bake Catch training session
+        </p>
+
+      </div>
+
+      <div class="cute-chip">
+        ✨ Latest Session
+      </div>
+
+    </div>
+
+
+
+    <div class="session-grid">
+
+
+      <div class="session-box">
+
+        <div class="session-icon">
+          🎚️
+        </div>
+
+        <div class="session-label">
+          Level
+        </div>
+
+        <div
+          class="session-value level-value"
+          id="latestLevel"
+        >
+          -
+        </div>
+
+      </div>
+
+
+
+      <div class="session-box">
+
+        <div class="session-icon">
+          ⏱️
+        </div>
+
+        <div class="session-label">
+          Play Time
+        </div>
+
+        <div
+          class="session-value"
+          id="latestTime"
+        >
+          00:00
+        </div>
+
+      </div>
+
+
+
+      <div class="session-box">
+
+        <div class="session-icon">
+          🧺
+        </div>
+
+        <div class="session-label">
+          Caught
+        </div>
+
+        <div
+          class="session-value"
+          id="latestCatch"
+        >
+          0
+        </div>
+
+      </div>
+
+
+
+      <div class="session-box">
+
+        <div class="session-icon">
+          💨
+        </div>
+
+        <div class="session-label">
+          Missed
+        </div>
+
+        <div
+          class="session-value"
+          id="latestMiss"
+        >
+          0
+        </div>
+
+      </div>
+
+
+
+      <div class="session-box">
+
+        <div class="session-icon">
+          🔥
+        </div>
+
+        <div class="session-label">
+          Max Combo
+        </div>
+
+        <div
+          class="session-value"
+          id="latestCombo"
+        >
+          0
+        </div>
+
+      </div>
+
+
+
+      <div class="session-box">
+
+        <div class="session-icon">
+          🍰
+        </div>
+
+        <div class="session-label">
+          Recipes
+        </div>
+
+        <div
+          class="session-value"
+          id="latestRecipe"
+        >
+          0
+        </div>
+
+      </div>
+
+
+    </div>
+
+  </section>
+
+
+
+  <!-- ==========================================================
+       HAND PERFORMANCE
+       ========================================================== -->
+
+  <section class="panel">
+
+
+    <div class="panel-head">
+
+      <div>
+
+        <h2 class="panel-title">
+          💪 Hand Power
+        </h2>
+
+        <p class="panel-desc">
+          Average controller input during your latest adventure
+        </p>
+
+      </div>
+
+      <div class="cute-chip">
+        🎮 Controller
+      </div>
+
+    </div>
+
+
+
+    <div class="hand-grid">
+
+
+      <div class="hand-card left-hand-card">
+
+        <div class="hand-top">
+
+          <div class="hand-name">
+            🖐️ Left Hand
+          </div>
+
+          <div
+            class="hand-percent"
+            id="leftGrip"
+          >
+            0%
+          </div>
+
+        </div>
+
+
+        <div class="grip-track">
+
+          <div
+            class="grip-fill left-fill"
+            id="leftGripBar"
+          ></div>
+
+        </div>
+
+
+        <div class="hand-hint">
+          Average grip controller input
+        </div>
+
+      </div>
+
+
+
+      <div class="hand-card right-hand-card">
+
+        <div class="hand-top">
+
+          <div class="hand-name">
+            🤚 Right Hand
+          </div>
+
+          <div
+            class="hand-percent"
+            id="rightGrip"
+          >
+            0%
+          </div>
+
+        </div>
+
+
+        <div class="grip-track">
+
+          <div
+            class="grip-fill right-fill"
+            id="rightGripBar"
+          ></div>
+
+        </div>
+
+
+        <div class="hand-hint">
+          Average grip controller input
+        </div>
+
+      </div>
+
+
+    </div>
+
+  </section>
+
+
+
+  <!-- ==========================================================
+       PROGRESS ANALYSIS
+       ========================================================== -->
+
+  <section class="panel">
+
+
+    <div class="panel-head">
+
+      <div>
+
+        <h2 class="panel-title">
+          📈 Adventure Progress
+        </h2>
+
+        <p class="panel-desc">
+          See how your training performance changes over time
+        </p>
+
+      </div>
+
+      <div class="cute-chip">
+        ⭐ Progress
+      </div>
+
+    </div>
+
+
+
+    <div class="charts-grid">
+
+
+      <div class="chart-window">
+
+        <div class="chart-title">
+          🏆 Score Journey
+        </div>
+
+        <div class="chart-area">
+          <canvas id="scoreChart"></canvas>
+        </div>
+
+      </div>
+
+
+
+      <div class="chart-window">
+
+        <div class="chart-title">
+          🎯 Accuracy Journey
+        </div>
+
+        <div class="chart-area">
+          <canvas id="accuracyChart"></canvas>
+        </div>
+
+      </div>
+
+
+
+      <div class="chart-window full">
+
+        <div class="chart-title">
+          💪 Left & Right Hand Power
+        </div>
+
+        <div class="chart-area">
+          <canvas id="gripChart"></canvas>
+        </div>
+
+      </div>
+
+
+    </div>
+
+  </section>
+
+
+
+  <!-- ==========================================================
+       SESSION HISTORY
+       ========================================================== -->
+
+  <section class="panel">
+
+
+    <div class="panel-head">
+
+      <div>
+
+        <h2 class="panel-title">
+          📖 Adventure History
+        </h2>
+
+        <p class="panel-desc">
+          Your previous Bake Catch training sessions
+        </p>
+
+      </div>
+
+      <div class="cute-chip">
+        🧁 Session Log
+      </div>
+
+    </div>
+
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>Session</th>
+            <th>Score</th>
+            <th>Level</th>
+            <th>Accuracy</th>
+            <th>Caught</th>
+            <th>Missed</th>
+            <th>Left Hand</th>
+            <th>Right Hand</th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody id="sessionTable">
+
+          <tr>
+
+            <td colspan="8">
+              Loading your adventure...
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+  </section>
+
+
+
+  <footer class="footer">
+
+    <div class="footer-logo">
+      🍓 🧁 🍰
+    </div>
+
+    Bake Catch · Rehabilitation Training Game
+
+  </footer>
+
+
+</div>
+
+
+
+<script type="module">
+
+
+  /* ============================================================
+     FIREBASE
+     ============================================================ */
+
+
+  import {
+    initializeApp
+  }
+  from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+
+  import {
+
+    getAuth,
+    signInAnonymously,
+    onAuthStateChanged
+
+  }
+  from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+
+  import {
+
+    getFirestore,
+    collection,
+    getDocs,
+    getDoc,
+    doc
+
+  }
+  from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+
+  /* ============================================================
+     FIREBASE CONFIG
+     ============================================================
+
+     สำคัญ:
+     Copy firebaseConfig ชุดเดิมจาก dashboard.html
+     เวอร์ชันที่ใช้งานได้ของคุณมาแทนด้านล่าง
+
+     ห้ามใช้ YOUR_... ตอนทดสอบจริง
+     ============================================================ */
+
+
+  const firebaseConfig = {
+  apiKey: "AIzaSyDKQcYGiUdCky3BDFbFSj7aghNKSvTXPGk",
+  authDomain: "bakecatch.firebaseapp.com",
+  projectId: "bakecatch",
+  storageBucket: "bakecatch.firebasestorage.app",
+  messagingSenderId: "589076082245",
+  appId: "1:589076082245:web:610c537c63774d11b9bd2c",
+  measurementId: "G-HQE4BE623Y"
+};
+
+
+
+  /* ============================================================
+     INITIALIZE
+     ============================================================ */
+
+
+  const app =
+    initializeApp(firebaseConfig);
+
+
+  const auth =
+    getAuth(app);
+
+
+  const db =
+    getFirestore(app);
+
+
+  const statusText =
+    document.getElementById("status");
+
+
+  let scoreChart = null;
+
+  let accuracyChart = null;
+
+  let gripChart = null;
+
+
+
+  /* ============================================================
+     AUTH
+     ============================================================ */
+
+
+  async function login() {
+
+    try {
+
+      await signInAnonymously(auth);
+
+    }
+
+    catch (error) {
+
+      console.error(error);
+
+
+      statusText.className =
+        "error";
+
+
+      statusText.textContent =
+        "Connection Error";
+
+    }
+
+  }
+
+
+
+  onAuthStateChanged(
+    auth,
+    async (user) => {
+
+      if (user) {
+
+        await loadDashboard();
+
+      }
+
+    }
+  );
+
+
+
+  /* ============================================================
+     LOAD FIRESTORE DATA
+     ============================================================ */
+
+
+  async function loadDashboard() {
+
+    try {
+
+
+      const playerId =
+        "P001";
+
+
+
+      /* PLAYER DOCUMENT */
+
+
+      const playerRef =
+        doc(
+          db,
+          "players",
+          playerId
+        );
+
+
+      const playerSnapshot =
+        await getDoc(playerRef);
+
+
+
+      if (!playerSnapshot.exists()) {
+
+        throw new Error(
+          "Player not found"
+        );
+
+      }
+
+
+      const player =
+        playerSnapshot.data();
+
+
+
+      document.getElementById(
+        "playerNameTop"
+      ).textContent =
+        player.displayName ??
+        playerId;
+
+
+
+      document.getElementById(
+        "playCount"
+      ).textContent =
+        player.playCount ?? 0;
+
+
+
+      /* SESSION COLLECTION */
+
+
+      const sessionsRef =
+        collection(
+          db,
+          "players",
+          playerId,
+          "sessions"
+        );
+
+
+      const sessionSnapshot =
+        await getDocs(sessionsRef);
+
+
+
+      const sessions = [];
+
+
+
+      sessionSnapshot.forEach(
+        (documentSnapshot) => {
+
+
+          const data =
+            documentSnapshot.data();
+
+
+          sessions.push({
+
+            id:
+              documentSnapshot.id,
+
+            ...data,
+
+            timestamp:
+              data.playedAt?.seconds ?? 0
+
+          });
+
+
+        }
+      );
+
+
+
+      sessions.sort(
+        (a, b) =>
+          a.timestamp - b.timestamp
+      );
+
+
+
+      if (
+        sessions.length === 0
+      ) {
+
+        throw new Error(
+          "No session data"
+        );
+
+      }
+
+
+
+      const latest =
+        sessions[
+          sessions.length - 1
+        ];
+
+
+
+      /* ========================================================
+         TOP CARDS
+         ======================================================== */
+
+
+      document.getElementById(
+        "latestScore"
+      ).textContent =
+        latest.score ?? 0;
+
+
+
+      document.getElementById(
+        "latestAccuracy"
+      ).textContent =
+        `${latest.accuracy ?? 0}%`;
+
+
+
+      document.getElementById(
+        "latestComboTop"
+      ).textContent =
+        latest.maxCombo ?? 0;
+
+
+
+      /* ========================================================
+         SESSION INFO
+         ======================================================== */
+
+
+      const levelElement =
+        document.getElementById(
+          "latestLevel"
+        );
+
+
+      const level =
+        latest.level ?? "-";
+
+
+      levelElement.textContent =
+        level;
+
+
+      applyLevelStyle(
+        levelElement,
+        level
+      );
+
+
+
+      document.getElementById(
+        "latestTime"
+      ).textContent =
+        formatTime(
+          latest.durationSec ?? 0
+        );
+
+
+
+      document.getElementById(
+        "latestCatch"
+      ).textContent =
+        latest.catchCount ?? 0;
+
+
+
+      document.getElementById(
+        "latestMiss"
+      ).textContent =
+        latest.missCount ?? 0;
+
+
+
+      document.getElementById(
+        "latestCombo"
+      ).textContent =
+        latest.maxCombo ?? 0;
+
+
+
+      document.getElementById(
+        "latestRecipe"
+      ).textContent =
+        latest.recipeComplete ?? 0;
+
+
+
+      /* ========================================================
+         HAND
+         ======================================================== */
+
+
+      const leftGrip =
+        clampPercent(
+          latest.leftAvgGrip ?? 0
+        );
+
+
+      const rightGrip =
+        clampPercent(
+          latest.rightAvgGrip ?? 0
+        );
+
+
+
+      document.getElementById(
+        "leftGrip"
+      ).textContent =
+        `${leftGrip}%`;
+
+
+
+      document.getElementById(
+        "rightGrip"
+      ).textContent =
+        `${rightGrip}%`;
+
+
+
+      document.getElementById(
+        "leftGripBar"
+      ).style.width =
+        `${leftGrip}%`;
+
+
+
+      document.getElementById(
+        "rightGripBar"
+      ).style.width =
+        `${rightGrip}%`;
+
+
+
+      /* ========================================================
+         CHART ARRAYS
+         ======================================================== */
+
+
+      const labels =
+        sessions.map(
+          (_, index) =>
+            `Game ${index + 1}`
+        );
+
+
+
+      const scores =
+        sessions.map(
+          session =>
+            session.score ?? 0
+        );
+
+
+
+      const accuracies =
+        sessions.map(
+          session =>
+            session.accuracy ?? 0
+        );
+
+
+
+      const leftGrips =
+        sessions.map(
+          session =>
+            clampPercent(
+              session.leftAvgGrip ?? 0
+            )
+        );
+
+
+
+      const rightGrips =
+        sessions.map(
+          session =>
+            clampPercent(
+              session.rightAvgGrip ?? 0
+            )
+        );
+
+
+
+      createCharts(
+
+        labels,
+
+        scores,
+
+        accuracies,
+
+        leftGrips,
+
+        rightGrips
+
+      );
+
+
+
+      createSessionTable(
+        sessions
+      );
+
+
+
+      statusText.className =
+        "success";
+
+
+      statusText.textContent =
+        "Ready ✓";
+
+
+    }
+
+    catch (error) {
+
+
+      console.error(error);
+
+
+      statusText.className =
+        "error";
+
+
+      statusText.textContent =
+        "Unable to load data";
+
+
+    }
+
+  }
+
+
+
+  /* ============================================================
+     LEVEL STYLE
+     ============================================================ */
+
+
+  function applyLevelStyle(
+    element,
+    level
+  ) {
+
+
+    element.classList.remove(
+
+      "level-easy",
+
+      "level-medium",
+
+      "level-hard"
+
+    );
+
+
+    const cleanLevel =
+      String(level)
+        .toLowerCase();
+
+
+    if (
+      cleanLevel === "easy"
+    ) {
+
+      element.classList.add(
+        "level-easy"
+      );
+
+    }
+
+    else if (
+      cleanLevel === "medium"
+    ) {
+
+      element.classList.add(
+        "level-medium"
+      );
+
+    }
+
+    else if (
+      cleanLevel === "hard"
+    ) {
+
+      element.classList.add(
+        "level-hard"
+      );
+
+    }
+
+  }
+
+
+
+  /* ============================================================
+     HELPERS
+     ============================================================ */
+
+
+  function formatTime(seconds) {
+
+
+    const value =
+      Number(seconds);
+
+
+    const safeValue =
+      Number.isFinite(value)
+        ? Math.max(0, value)
+        : 0;
+
+
+    const minutes =
+      Math.floor(
+        safeValue / 60
+      );
+
+
+    const remain =
+      Math.floor(
+        safeValue % 60
+      );
+
+
+    return (
+
+      String(minutes)
+        .padStart(2, "0")
+
+      +
+
+      ":"
+
+      +
+
+      String(remain)
+        .padStart(2, "0")
+
+    );
+
+  }
+
+
+
+  function clampPercent(value) {
+
+
+    const number =
+      Number(value);
+
+
+    if (
+      !Number.isFinite(number)
+    ) {
+
+      return 0;
+
+    }
+
+
+    return Math.min(
+
+      100,
+
+      Math.max(
+
+        0,
+
+        Math.round(number)
+
+      )
+
+    );
+
+  }
+
+
+
+  /* ============================================================
+     CHARTS
+     ============================================================ */
+
+
+  function createCharts(
+
+    labels,
+
+    scores,
+
+    accuracies,
+
+    leftGrips,
+
+    rightGrips
+
+  ) {
+
+
+    if (scoreChart) {
+
+      scoreChart.destroy();
+
+    }
+
+
+    if (accuracyChart) {
+
+      accuracyChart.destroy();
+
+    }
+
+
+    if (gripChart) {
+
+      gripChart.destroy();
+
+    }
+
+
+
+    const commonOptions = {
+
+      responsive: true,
+
+      maintainAspectRatio: false,
+
+      plugins: {
+
+        legend: {
+
+          labels: {
+
+            usePointStyle: true,
+
+            boxWidth: 8,
+
+            font: {
+
+              weight: "bold"
+
+            }
+
+          }
+
+        }
+
+      },
+
+      scales: {
+
+        x: {
+
+          grid: {
+
+            display: false
+
+          }
+
+        },
+
+        y: {
+
+          grid: {
+
+            color:
+              "rgba(120,90,75,0.08)"
+
+          }
+
+        }
+
+      }
+
+    };
+
+
+
+    /* SCORE CHART */
+
+
+    scoreChart =
+      new Chart(
+
+        document.getElementById(
+          "scoreChart"
+        ),
+
+        {
+
+          type:
+            "line",
+
+
+          data: {
+
+            labels,
+
+            datasets: [
+
+              {
+
+                label:
+                  "Score",
+
+                data:
+                  scores,
+
+                borderColor:
+                  "#ffad66",
+
+                backgroundColor:
+                  "rgba(255,173,102,0.16)",
+
+                pointBackgroundColor:
+                  "#ff9a5a",
+
+                pointBorderColor:
+                  "#ffffff",
+
+                pointBorderWidth:
+                  3,
+
+                pointRadius:
+                  6,
+
+                tension:
+                  0.35,
+
+                fill:
+                  true
+
+              }
+
+            ]
+
+          },
+
+
+          options:
+            commonOptions
+
+        }
+
+      );
+
+
+
+    /* ACCURACY */
+
+
+    accuracyChart =
+      new Chart(
+
+        document.getElementById(
+          "accuracyChart"
+        ),
+
+        {
+
+          type:
+            "line",
+
+
+          data: {
+
+            labels,
+
+            datasets: [
+
+              {
+
+                label:
+                  "Accuracy",
+
+                data:
+                  accuracies,
+
+                borderColor:
+                  "#f77f96",
+
+                backgroundColor:
+                  "rgba(247,127,150,0.13)",
+
+                pointBackgroundColor:
+                  "#f77f96",
+
+                pointBorderColor:
+                  "#ffffff",
+
+                pointBorderWidth:
+                  3,
+
+                pointRadius:
+                  6,
+
+                fill:
+                  true,
+
+                tension:
+                  0.35
+
+              }
+
+            ]
+
+          },
+
+
+          options: {
+
+            ...commonOptions,
+
+            scales: {
+
+              x: {
+
+                grid: {
+
+                  display: false
+
+                }
+
+              },
+
+              y: {
+
+                min: 0,
+
+                max: 100,
+
+                grid: {
+
+                  color:
+                    "rgba(120,90,75,0.08)"
+
+                }
+
+              }
+
+            }
+
+          }
+
+        }
+
+      );
+
+
+
+    /* HAND CHART */
+
+
+    gripChart =
+      new Chart(
+
+        document.getElementById(
+          "gripChart"
+        ),
+
+        {
+
+          type:
+            "line",
+
+
+          data: {
+
+            labels,
+
+            datasets: [
+
+              {
+
+                label:
+                  "Left Hand",
+
+                data:
+                  leftGrips,
+
+                borderColor:
+                  "#72aaf5",
+
+                backgroundColor:
+                  "rgba(114,170,245,0.12)",
+
+                pointBackgroundColor:
+                  "#72aaf5",
+
+                pointBorderColor:
+                  "#ffffff",
+
+                pointBorderWidth:
+                  3,
+
+                pointRadius:
+                  6,
+
+                tension:
+                  0.35
+
+              },
+
+
+              {
+
+                label:
+                  "Right Hand",
+
+                data:
+                  rightGrips,
+
+                borderColor:
+                  "#ff7890",
+
+                backgroundColor:
+                  "rgba(255,120,144,0.12)",
+
+                pointBackgroundColor:
+                  "#ff7890",
+
+                pointBorderColor:
+                  "#ffffff",
+
+                pointBorderWidth:
+                  3,
+
+                pointRadius:
+                  6,
+
+                tension:
+                  0.35
+
+              }
+
+            ]
+
+          },
+
+
+          options: {
+
+            ...commonOptions,
+
+            scales: {
+
+              x: {
+
+                grid: {
+
+                  display: false
+
+                }
+
+              },
+
+              y: {
+
+                min: 0,
+
+                max: 100,
+
+                grid: {
+
+                  color:
+                    "rgba(120,90,75,0.08)"
+
+                }
+
+              }
+
+            }
+
+          }
+
+        }
+
+      );
+
+  }
+
+
+
+  /* ============================================================
+     SESSION HISTORY
+     ============================================================ */
+
+
+  function createSessionTable(
+    sessions
+  ) {
+
+
+    const table =
+      document.getElementById(
+        "sessionTable"
+      );
+
+
+    table.innerHTML =
+      "";
+
+
+
+    sessions.forEach(
+
+      (session, index) => {
+
+
+        const row =
+          document.createElement(
+            "tr"
+          );
+
+
+
+        row.innerHTML = `
+
+
+          <td>
+
+            <span class="session-number">
+
+              ${index + 1}
+
+            </span>
+
+          </td>
+
+
+          <td>
+
+            <strong>
+
+              ${session.score ?? 0}
+
+            </strong>
+
+          </td>
+
+
+          <td>
+
+            <span class="table-level">
+
+              ${session.level ?? "-"}
+
+            </span>
+
+          </td>
+
+
+          <td>
+
+            🎯
+            ${session.accuracy ?? 0}%
+
+          </td>
+
+
+          <td>
+
+            🧺
+            ${session.catchCount ?? 0}
+
+          </td>
+
+
+          <td>
+
+            💨
+            ${session.missCount ?? 0}
+
+          </td>
+
+
+          <td>
+
+            🖐️
+            ${clampPercent(
+              session.leftAvgGrip ?? 0
+            )}%
+
+          </td>
+
+
+          <td>
+
+            🤚
+            ${clampPercent(
+              session.rightAvgGrip ?? 0
+            )}%
+
+          </td>
+
+
+        `;
+
+
+
+        table.appendChild(
+          row
+        );
+
+      }
+
+    );
+
+  }
+
+
+
+  /* ============================================================
+     START
+     ============================================================ */
+
+
+  login();
+
+
+</script>
+
+
+</body>
+</html>
