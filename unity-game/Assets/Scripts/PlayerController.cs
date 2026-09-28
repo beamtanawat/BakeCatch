@@ -6,6 +6,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Min(0f)] private float moveSpeed = 5f;
     [SerializeField] private float minX = -7f;
     [SerializeField] private float maxX = 7f;
+    private GameSession session;
+
+    public void SetSession(GameSession value) => session = value;
 
     private void Awake()
     {
@@ -18,6 +21,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (session != null && !session.IsPlaying) return;
         Vector3 position = transform.position;
         position.x += inputProvider.HorizontalInput * moveSpeed * Time.deltaTime;
         position.x = Mathf.Clamp(position.x, minX, maxX);
