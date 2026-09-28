@@ -8,6 +8,7 @@ public static class BakeCatchSetup
     public static void Prepare()
     {
         if (EditorApplication.isPlaying) throw new System.InvalidOperationException("Exit Play Mode before setup.");
+        if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
         var scene = EditorSceneManager.OpenScene("Assets/Scenes/Game.unity");
         PlayerController player = Object.FindFirstObjectByType<PlayerController>();
         IngredientSpawner spawner = Object.FindFirstObjectByType<IngredientSpawner>();
@@ -17,18 +18,18 @@ public static class BakeCatchSetup
         GameObject prefab = PrefabUtility.LoadPrefabContents("Assets/Prefabs/Ingredient.prefab");
         try
         {
-        Rigidbody2D body = GetOrAdd<Rigidbody2D>(prefab);
-        body.bodyType = RigidbodyType2D.Kinematic;
-        body.useFullKinematicContacts = true;
-        body.gravityScale = 0f;
-        body.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
-        body.interpolation = RigidbodyInterpolation2D.Interpolate;
-        CircleCollider2D collider = GetOrAdd<CircleCollider2D>(prefab);
-        collider.radius = 0.44f;
-        collider.isTrigger = true;
-        prefab.transform.localScale = Vector3.one;
-        Assign(GetOrAdd<IngredientVisual>(prefab), "labelFont", font);
-        PrefabUtility.SaveAsPrefabAsset(prefab, "Assets/Prefabs/Ingredient.prefab");
+            Rigidbody2D body = GetOrAdd<Rigidbody2D>(prefab);
+            body.bodyType = RigidbodyType2D.Kinematic;
+            body.useFullKinematicContacts = true;
+            body.gravityScale = 0f;
+            body.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+            body.interpolation = RigidbodyInterpolation2D.Interpolate;
+            CircleCollider2D collider = GetOrAdd<CircleCollider2D>(prefab);
+            collider.radius = 0.44f;
+            collider.isTrigger = true;
+            prefab.transform.localScale = Vector3.one;
+            Assign(GetOrAdd<IngredientVisual>(prefab), "labelFont", font);
+            PrefabUtility.SaveAsPrefabAsset(prefab, "Assets/Prefabs/Ingredient.prefab");
         }
         finally { PrefabUtility.UnloadPrefabContents(prefab); }
 

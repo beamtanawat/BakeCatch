@@ -76,14 +76,15 @@ public class BakeCatchUI : MonoBehaviour
         text.alignment = alignment;
         text.text = value;
         text.horizontalOverflow = HorizontalWrapMode.Wrap;
-        text.verticalOverflow = VerticalWrapMode.Truncate;
+        // Thai accents need more vertical font space than Latin-only labels.
+        text.verticalOverflow = VerticalWrapMode.Overflow;
         text.raycastTarget = false;
         return text;
     }
 
     private Button Action(Transform parent, string title, float x, float y, float width, float height, UnityEngine.Events.UnityAction action, bool primary = true)
     {
-        Image image = Panel(parent, title, x, y, width, height, primary ? pink : cream);
+        Image image = Panel(parent, title, x, y, width, height, primary ? pink : BakeryArt.Hex("#FBE3D6"));
         Button button = image.gameObject.AddComponent<Button>();
         ColorBlock colors = button.colors;
         colors.highlightedColor = BakeryArt.Hex("#FFE0A9");
@@ -202,7 +203,8 @@ public class BakeCatchUI : MonoBehaviour
         Label(result.transform, "FRESHLY FINISHED", 430, 76, 740, 40, 20, pink);
         Label(result.transform, "Sweet work!", 430, 120, 740, 85, 64, pink);
         Label(result.transform, "Every session is another step forward.", 420, 212, 760, 45, 25);
-        resultStats = Label(result.transform, "", 435, 290, 730, 345, 28, ink, TextAnchor.MiddleLeft);
+        Label(result.transform, "Score\nMax Combo\nCatch Count\nMiss Count\nAccuracy\nPlay Time\nLevel\nRecipe Complete", 435, 290, 430, 365, 28, ink, TextAnchor.MiddleLeft);
+        resultStats = Label(result.transform, "", 890, 290, 270, 365, 28, ink, TextAnchor.MiddleRight);
         Action(result.transform, "Play Again", 385, 714, 385, 72, () => Begin(session.Difficulty));
         Action(result.transform, "Main Menu", 830, 714, 385, 72, ReturnMenu, false);
     }
@@ -230,7 +232,7 @@ public class BakeCatchUI : MonoBehaviour
             {
                 Show(result);
                 SessionResult r = session.Result;
-                resultStats.text = $"Score                         {r.score}\nMax Combo                 {r.maxCombo}\nCatch Count                {r.catchCount}\nMiss Count                  {r.missCount}\nAccuracy                     {r.accuracy:0.0}%\nPlay Time                    {FormatTime(r.durationSec)}\nLevel                            {r.level}\nRecipe Complete          {r.recipeComplete}";
+                resultStats.text = $"{r.score}\n{r.maxCombo}\n{r.catchCount}\n{r.missCount}\n{r.accuracy:0.0}%\n{FormatTime(r.durationSec)}\n{r.level}\n{r.recipeComplete}";
             }
         }
         if (levels.activeSelf && Keyboard.current != null)
