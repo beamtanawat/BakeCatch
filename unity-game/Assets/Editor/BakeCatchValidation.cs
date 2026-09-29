@@ -171,9 +171,10 @@ public static class BakeCatchValidation
         spawner.enabled = false;
 
         float startX = player.transform.position.x;
+        int inputStartFrame = Time.frameCount;
         Keys(Key.A);
         yield return 0.2;
-        Expect(sampledInput == -1 && player.transform.position.x < startX, "A must move left");
+        Expect(sampledInput == -1 && player.transform.position.x < startX, $"A must move left (input={sampledInput}, x={player.transform.position.x}, start={startX}, frames={Time.frameCount - inputStartFrame}, focused={Application.isFocused}, state={session.State})");
         Keys(Key.D);
         yield return 0.2;
         Expect(sampledInput == 1, "D must move right");

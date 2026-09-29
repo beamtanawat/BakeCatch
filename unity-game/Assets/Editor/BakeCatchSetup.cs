@@ -2,6 +2,24 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
+// Preserve transparent edges and atlas coordinates; applies only to presentation art.
+public class BakeCatchArtImporter : AssetPostprocessor
+{
+    private void OnPreprocessTexture()
+    {
+        if (!assetPath.StartsWith("Assets/Resources/BakeCatch/")) return;
+        TextureImporter importer = (TextureImporter)assetImporter;
+        importer.textureType = TextureImporterType.Default;
+        importer.npotScale = TextureImporterNPOTScale.None;
+        importer.maxTextureSize = 2048;
+        importer.mipmapEnabled = false;
+        importer.alphaIsTransparency = true;
+        importer.wrapMode = TextureWrapMode.Clamp;
+        importer.filterMode = FilterMode.Bilinear;
+        importer.textureCompression = TextureImporterCompression.Uncompressed;
+    }
+}
+
 public static class BakeCatchSetup
 {
     [MenuItem("Bake Catch/Prepare Standalone Game")]
