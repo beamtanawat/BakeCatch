@@ -1,0 +1,39 @@
+Bake Catch presentation artwork
+Generated with the built-in imagegen tool, September 29, 2026, from the user's
+approved Bake Catch visual reference. No downloaded third-party illustration pack.
+These replaceable PNGs contain no gameplay logic. Original generation outputs are
+retained outside the repository; only the selected four assets are included here.
+
+Bakery.png — Generation brief:
+Production-ready 16:9 background for Bake Catch: warm illustrated golden-orange
+wooden bakery, central arched window with blue sky and green trees, shelves of
+loaves and pastel cakes, warm brass pendant lamps, cream highlights, peach walls,
+low wooden counters and honey-colored floor. Frontal view, open central play area,
+polished kawaii 2D illustration, moderate background contrast. Background only:
+no chef, people, floating ingredients, HUD, text, logo, cards, controls or frame.
+
+Chef.png — Generation brief:
+Transparent front-facing full-body chibi chef sprite, large friendly head, small
+body, fluffy white toque with pale pink folds, glossy brown eyes, warm brown curls,
+pink cheeks, joyful smile, white double-breasted jacket, red scarf, brown shoes.
+Arms hold a shallow pink tray on viewer-left and blue tray on viewer-right.
+Dark chocolate outlines, creamy warm highlights; no scenery, text or catch zone.
+
+Ingredients.png — Generation brief:
+Transparent 4x4 sprite atlas, no grid or captions. Glossy kawaii 2D game icons,
+dark chocolate outlines with cream outer edge, warm shading, readable silhouettes.
+Row 1: strawberry, blue-white MILK carton, cream egg, yellow cheese wedge.
+Row 2: tomato, raw dough ball, bread slice, steak with pale fat edge.
+Row 3: chocolate bar, golden star, black bomb with pink skull and lit fuse, cake.
+Row 4: pizza, hamburger, pink-cream stopwatch, white chef hat.
+BakeryArt.Icon uses inspected gutter coordinates rather than modifying the PNG.
+
+Logo.png — Generation brief:
+Transparent Bake Catch logo, exact two-line text. Bake in honey-yellow/orange,
+Catch in strawberry pink, chunky inflated lettering, cream highlights, thick
+chocolate outline and cream rim. White chef hat above B, strawberry lower left,
+small pink heart lower right. No tagline, UI or scenery.
+
+Import: preserve original dimensions, alpha, bilinear filtering, no mipmaps,
+no texture compression. BakeryArt loads the assets; UI/chef/ingredient components
+consume sprites. Scene and prefab colliders are intentionally unchanged.
