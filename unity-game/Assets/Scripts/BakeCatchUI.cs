@@ -209,7 +209,7 @@ public class BakeCatchUI : MonoBehaviour
             Label(instructions.transform, titles[i], x + 15, 413, 390, 48, 28, pink);
             Label(instructions.transform, copy[i], x + 15, 470, 390, 125, 22);
         }
-        Label(instructions.transform, "90 seconds  •  Esc to pause  •  No catch button needed", 200, 648, 1200, 45, 24);
+        Label(instructions.transform, $"{session.Duration:0} seconds  •  Esc to pause  •  No catch button needed", 200, 648, 1200, 45, 24);
         Action(instructions.transform, "Ready to bake", 550, 721, 500, 65, () => Show(levels));
     }
 
@@ -220,7 +220,7 @@ public class BakeCatchUI : MonoBehaviour
         Card(hud.transform, "Top bar", 356, 20, 1092, 119, cream, BakeryArt.Hex("#EEA686"));
         Icon(hud.transform, 14, 368, 33, 80);
         Label(hud.transform, "Time", 451, 23, 144, 32, 22);
-        timeLabel = Label(hud.transform, "01:30", 440, 56, 171, 65, 42);
+        timeLabel = Label(hud.transform, FormatTime(session.Duration), 440, 56, 171, 65, 42);
         Icon(hud.transform, 9, 626, 43, 67);
         Label(hud.transform, "Score", 702, 23, 150, 32, 22);
         scoreLabel = Label(hud.transform, "0", 695, 56, 174, 65, 42);

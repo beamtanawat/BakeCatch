@@ -5,7 +5,7 @@ public enum SessionState { Ready, Playing, Paused, Ended }
 
 public class GameSession : MonoBehaviour
 {
-    [SerializeField, Min(1f)] private float sessionDuration = 90f;
+    [SerializeField, Min(1f)] private float sessionDuration = 45f;
     [SerializeField] private PlayerController player;
     [SerializeField] private IngredientSpawner spawner;
 

@@ -275,6 +275,7 @@ public static class BakeCatchValidation
         }
 
         // Shorten only the live test instance; no scene or Inspector asset is saved.
+        float configuredDuration = session.Duration;
         SerializedObject liveSession = new SerializedObject(session);
         liveSession.FindProperty("sessionDuration").floatValue = 1;
         liveSession.ApplyModifiedPropertiesWithoutUndo();
@@ -303,7 +304,7 @@ public static class BakeCatchValidation
         yield return 0.1;
         Expect(Visible("Main Menu"), "Result to Main Menu");
         liveSession.Update();
-        liveSession.FindProperty("sessionDuration").floatValue = 90;
+        liveSession.FindProperty("sessionDuration").floatValue = configuredDuration;
         liveSession.ApplyModifiedPropertiesWithoutUndo();
     }
 
