@@ -17,6 +17,21 @@ public static class BakeCatchVisualValidation
     private static bool wasMaximized;
     private static readonly List<GameObject> samples = new List<GameObject>();
 
+    [MenuItem("Bake Catch/Check Gameplay Layout (Play Mode)")]
+    public static void CheckGameplayLayout()
+    {
+        if (!EditorApplication.isPlaying) throw new Exception("Enter Play Mode first.");
+        BakeCatchUI screens = Object.FindFirstObjectByType<BakeCatchUI>();
+        Transform hud = screens.transform.Find("Layout/Gameplay HUD");
+        foreach (Image image in hud.GetComponentsInChildren<Image>(true))
+        {
+            RectTransform rect = image.rectTransform;
+            if (rect.sizeDelta.x > 200 && rect.sizeDelta.y > 70 && rect.anchoredPosition.y < -700)
+                throw new Exception("Gameplay must not contain a large bottom-corner control card: " + image.name);
+        }
+        Debug.Log("BAKE_CATCH_BOTTOM_PANELS_PASS: no large bottom control cards.");
+    }
+
     [MenuItem("Bake Catch/Review Visual Screens (Play Mode)")]
     public static void ReviewScreens()
     {
@@ -84,6 +99,7 @@ public static class BakeCatchVisualValidation
         spawner.enabled = false;
         spawner.ClearObjects();
         Transform hud = ui.transform.Find("Layout/Gameplay HUD");
+        CheckGameplayLayout();
         RectTransform layout = (RectTransform)ui.transform.Find("Layout");
         Vector2 originalPosition = layout.anchoredPosition;
         layout.anchoredPosition += new Vector2(37, 23);
@@ -93,15 +109,14 @@ public static class BakeCatchVisualValidation
         Vector2 shownCatch = RectTransformUtility.WorldToScreenPoint(null,
             hud.Find("Catch Zone").TransformPoint(new Vector3(100, -18, 0)));
         layout.anchoredPosition = originalPosition;
-        if (Vector2.Distance(expectedCatch, shownCatch) > 3)
-            throw new Exception("Catch label must stay aligned when canvas margins change.");
+        bool aligned = Vector2.Distance(expectedCatch, shownCatch) <= 3;
         float originalAspect = Camera.main.aspect;
         Camera.main.aspect = 2.4f;
         yield return .3;
         SpriteRenderer backdrop = Object.FindFirstObjectByType<BakeryBackdrop>().GetComponentInChildren<SpriteRenderer>();
         bool covers = backdrop.bounds.size.x >= Camera.main.orthographicSize * 2 * Camera.main.aspect - .01f;
         Camera.main.aspect = originalAspect;
-        if (!covers) throw new Exception("Bakery must still cover the camera after viewport widens.");
+        if (!aligned || !covers) throw new Exception($"Viewport regression: catch label aligned={aligned}, bakery covers wider viewport={covers}");
         yield return .3;
         foreach (Text text in hud.GetComponentsInChildren<Text>())
             if (text.text.Contains("%")) throw new Exception("Keyboard HUD must not present fake grip percentages.");

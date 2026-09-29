@@ -12,16 +12,15 @@ public class BakeCatchUI : MonoBehaviour
     private Transform root;
     private GameObject menu, levels, instructions, hud, pause, result;
     private Text timeLabel, scoreLabel, comboLabel, levelLabel, recipeLabel, feedback, resultStats;
-    private Text leftLabel, rightLabel, catchLabel, resultScore;
+    private Text catchLabel, resultScore;
     private readonly Text[] rowNames = new Text[3], rowCounts = new Text[3], rowChecks = new Text[3];
     private readonly Image[] rowIcons = new Image[3];
-    private Image timeFill, recipeIcon, leftKey, rightKey;
+    private Image timeFill, recipeIcon;
     private Transform chef;
     private SessionState shownState;
     private readonly Color ink = BakeryArt.Hex("#592A24");
     private readonly Color cream = BakeryArt.Hex("#FFF8EB");
     private readonly Color pink = BakeryArt.Hex("#FF537D");
-    private readonly Color blue = BakeryArt.Hex("#168FEC");
 
     private void Start()
     {
@@ -263,28 +262,10 @@ public class BakeCatchUI : MonoBehaviour
         Outline feedbackOutline = feedback.gameObject.AddComponent<Outline>();
         feedbackOutline.effectColor = cream;
         feedbackOutline.effectDistance = new Vector2(2, -2);
-        BuildHand(true);
-        BuildHand(false);
         catchLabel = Label(hud.transform, "Catch Zone", 700, 640, 200, 35, 22, pink);
         Outline outline = catchLabel.gameObject.AddComponent<Outline>();
         outline.effectColor = cream;
         outline.effectDistance = new Vector2(2, -2);
-    }
-
-    private void BuildHand(bool left)
-    {
-        float x = left ? 25 : 1135;
-        Color tone = left ? pink : blue;
-        Card(hud.transform, left ? "Left control" : "Right control", x, 767, 440, 110,
-            BakeryArt.Hex(left ? "#FFF0F2" : "#E9F8FF"), tone);
-        Label(hud.transform, left ? "LEFT HAND" : "RIGHT HAND", x + 20, 777, 215, 38, 28, tone);
-        Image key = Card(hud.transform, left ? "Left keys" : "Right keys", x + 239, 784, 179, 48,
-            BakeryArt.Hex(left ? "#FFD7E0" : "#C8EDFF"), tone);
-        Text label = Label(key.transform, left ? "A   /   ←" : "D   /   →", 4, 0, 171, 48, 28, tone);
-        Label(hud.transform, "KEYBOARD MODE", x + 23, 827, 206, 29, 16, ink);
-        Label(hud.transform, left ? "Move left" : "Move right", x + 240, 840, 178, 24, 17, tone);
-        if (left) { leftLabel = label; leftKey = key.transform.GetChild(0).GetComponent<Image>(); }
-        else { rightLabel = label; rightKey = key.transform.GetChild(0).GetComponent<Image>(); }
     }
 
     private void BuildPause()
@@ -382,15 +363,9 @@ public class BakeCatchUI : MonoBehaviour
         }
         feedback.text = string.IsNullOrEmpty(session.Feedback) ? session.Statistics.ComboFeedback :
             session.Feedback + "  " + session.Statistics.ComboFeedback;
-        Keyboard keys = Keyboard.current;
-        bool left = keys != null && (keys.aKey.isPressed || keys.leftArrowKey.isPressed);
-        bool right = keys != null && (keys.dKey.isPressed || keys.rightArrowKey.isPressed);
-        leftKey.color = left ? pink : BakeryArt.Hex("#FFD7E0");
-        rightKey.color = right ? blue : BakeryArt.Hex("#C8EDFF");
-        leftLabel.color = left ? Color.white : pink;
-        rightLabel.color = right ? Color.white : blue;
-        Vector3 point = Camera.main.WorldToViewportPoint(chef.TransformPoint(new Vector3(0, 2.02f, 0)));
-        catchLabel.rectTransform.anchoredPosition = new Vector2(point.x * 1600 - 100, -(1 - point.y) * 900 + 18);
+        Vector3 point = Camera.main.WorldToScreenPoint(chef.TransformPoint(new Vector3(0, 2.02f, 0)));
+        RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)hud.transform, point, null, out Vector2 local);
+        catchLabel.rectTransform.anchoredPosition = local + new Vector2(-100, 18);
     }
 
     private static string FormatTime(float seconds)
